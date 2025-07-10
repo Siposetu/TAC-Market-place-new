@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, Briefcase, Calendar, MapPin, Phone, Clock, Camera, CheckCircle, Star, Plus, X, AlertCircle, Info } from 'lucide-react';
 import { useLocalProfiles } from '../hooks/useLocalProfiles';
+import { useGoogleSheets } from '../hooks/useGoogleSheets';
 import { LocationPicker } from './LocationPicker';
 import { NavigationButtons } from './NavigationButtons';
 
@@ -66,7 +67,8 @@ export function LocalProfileForm() {
   });
   const [googleSheetsError, setGoogleSheetsError] = useState<string>('');
   
-  const { submitProfile, connectToGoogleSheets, isSignedIn } = useLocalProfiles();
+  const { submitProfile } = useLocalProfiles();
+  const { connectToGoogleSheets, isSignedIn } = useGoogleSheets();
 
   const skills = [
     'Hairdressing',
