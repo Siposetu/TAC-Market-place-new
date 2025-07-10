@@ -1,8 +1,16 @@
 export const stripeProducts = [
   {
+    priceId: 'free_plan', // Special ID for free plan
+    name: 'Free Plan',
+    description: 'Perfect for getting started with basic features and limited AI generation',
+    mode: 'payment' as const,
+    price: 0,
+    currency: 'ZAR'
+  },
+  {
     priceId: 'price_1RiVkACVwlXJEJ4LUrEYcLDe', // Individual subscription price ID
     name: 'Individual Subscription',
-    description: 'Access to AI profile generation and premium features for individual service providers',
+    description: 'Unlimited AI profile generation and premium features for individual service providers',
     mode: 'subscription' as const,
     price: 50,
     currency: 'ZAR'
@@ -13,14 +21,6 @@ export const stripeProducts = [
     description: 'Complete business solution with booking management, analytics, and priority support',
     mode: 'subscription' as const,
     price: 100,
-    currency: 'ZAR'
-  },
-  {
-    priceId: 'price_service_booking', // You'll need to create this in Stripe
-    name: 'Service Booking',
-    description: 'One-time payment for booking professional services',
-    mode: 'payment' as const,
-    price: 20,
     currency: 'ZAR'
   }
 ];

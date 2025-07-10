@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Zap, Crown, CreditCard, Shield, Users, Sparkles, Star, ArrowRight, Building2 } from 'lucide-react';
+import { Check, Zap, Crown, CreditCard, Shield, Users, Sparkles, Star, ArrowRight, Building2, Gift } from 'lucide-react';
 import { stripeProducts } from '../stripe-config';
 import { StripeCheckout } from './StripeCheckout';
 import { SubscriptionStatus } from './SubscriptionStatus';
@@ -15,13 +15,20 @@ export function PricingPage() {
   const { isSubscriptionActive } = useStripe();
 
   const handleSelectPlan = (product: typeof stripeProducts[0]) => {
+    if (product.price === 0) {
+      // Handle free plan - no checkout needed
+      alert('Free plan selected! You can start using basic features immediately.');
+      return;
+    }
     setSelectedProduct(product);
     setShowCheckout(true);
   };
 
   const getProductIcon = (name: string) => {
     switch (name.toLowerCase()) {
-      case 'subscription':
+      case 'free plan':
+        return <Gift className="w-8 h-8" />;
+      case 'individual subscription':
         return <Zap className="w-8 h-8" />;
       case 'business subscription':
         return <Crown className="w-8 h-8" />;
@@ -31,7 +38,7 @@ export function PricingPage() {
   };
 
   const formatPrice = (product: typeof stripeProducts[0]) => {
-    if (product.price === null || product.price === 0) {
+    if (product.price === 0) {
       return 'Free';
     }
     const symbol = product.currency === 'ZAR' ? 'R' : '$';
@@ -40,22 +47,33 @@ export function PricingPage() {
 
   const getFeatures = (name: string) => {
     switch (name.toLowerCase()) {
+      case 'free plan':
+        return [
+          'Basic profile creation',
+          'Limited AI bio generation (3 per month)',
+          'Basic search functionality',
+          'Community support',
+          'Standard listing visibility'
+        ];
       case 'individual subscription':
         return [
-          'AI-powered profile generation',
-          'Unlimited bio updates',
-          'Priority customer support',
-          'Advanced analytics',
-          'Monthly feature updates'
+          'Unlimited AI-powered profile generation',
+          'Advanced profile customization',
+          'Priority search ranking',
+          'Email support',
+          'Analytics dashboard',
+          'Social media integration'
         ];
       case 'business subscription':
         return [
+          'Everything in Individual plan',
           'Business profile hosting',
           'Online booking system',
-          'Customer management',
-          'Payment processing',
-          'Marketing tools',
-          'Analytics dashboard'
+          'Customer management tools',
+          'Payment processing integration',
+          'Advanced analytics & reporting',
+          'Priority customer support',
+          'Custom branding options'
         ];
       default:
         return ['Standard features included'];
@@ -63,15 +81,25 @@ export function PricingPage() {
   };
 
   const getCtaLabel = (product: typeof stripeProducts[0]) => {
-    if (product.price === null || product.price === 0) return 'Free';
-    return 'Get Started';
+    if (product.price === 0) return 'Get Started Free';
+    return 'Upgrade Now';
   };
 
-  const visibleProducts = stripeProducts.filter(
-    (product) =>
-      product.name.toLowerCase() === 'subscription' ||
-      product.name.toLowerCase() === 'business subscription'
-  );
+  const getPopularBadge = (name: string) => {
+    if (name.toLowerCase() === 'individual subscription') {
+      return (
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-xl border-4 border-white">
+            <div className="flex items-center space-x-2">
+              <Star className="w-4 h-4 text-yellow-300" />
+              <span>Most Popular</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   if (showCheckout) {
     return (
@@ -105,8 +133,7 @@ export function PricingPage() {
             TAC Marketplace
           </h1>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed mb-8">
-            Elevate your business with our professional service platform. Connect with clients, 
-            manage bookings, and grow your revenue with AI-powered tools.
+            Choose the perfect plan for your business needs. Start free and upgrade as you grow with our AI-powered service platform.
           </p>
           
           {/* Trust Indicators */}
@@ -160,38 +187,37 @@ export function PricingPage() {
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-slate-800 mb-6">Choose Your Plan</h2>
               <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                Select the perfect plan for your business needs. Upgrade or downgrade at any time with no hidden fees.
+                Start free and upgrade when you're ready. All plans include our core features with no hidden fees.
               </p>
             </div>
 
             {/* Plan Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
-              {visibleProducts.map((product, index) => (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
+              {stripeProducts.map((product, index) => (
                 <div
                   key={product.priceId}
                   className={`relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border overflow-hidden transform hover:scale-105 transition-all duration-500 ${
-                    product.name.toLowerCase() === 'subscription'
-                      ? 'border-slate-300 ring-4 ring-slate-200 ring-opacity-50'
+                    product.name.toLowerCase() === 'individual subscription'
+                      ? 'border-blue-300 ring-4 ring-blue-200 ring-opacity-50 scale-105'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   {/* Popular Badge */}
-                  {product.name.toLowerCase() === 'subscription' && (
-                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-                      <div className="bg-gradient-to-r from-slate-700 to-slate-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-xl border-4 border-white">
-                        <div className="flex items-center space-x-2">
-                          <Star className="w-4 h-4 text-yellow-300" />
-                          <span>Most Popular</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {getPopularBadge(product.name)}
 
                   <div className="p-10">
                     {/* Icon */}
                     <div className="flex justify-center mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-br from-slate-700 to-slate-600 rounded-2xl flex items-center justify-center shadow-xl">
-                        {getProductIcon(product.name)}
+                      <div className={`w-20 h-20 rounded-2xl flex items-center justify-center shadow-xl ${
+                        product.price === 0 
+                          ? 'bg-gradient-to-br from-green-500 to-emerald-500'
+                          : product.name.toLowerCase() === 'individual subscription'
+                          ? 'bg-gradient-to-br from-blue-600 to-purple-600'
+                          : 'bg-gradient-to-br from-slate-700 to-slate-600'
+                      }`}>
+                        <div className="text-white">
+                          {getProductIcon(product.name)}
+                        </div>
                       </div>
                     </div>
 
@@ -209,8 +235,11 @@ export function PricingPage() {
                             <span className="text-slate-600 ml-3 text-lg">/month</span>
                           )}
                         </div>
-                        {product.mode === 'subscription' && (
+                        {product.mode === 'subscription' && product.price !== 0 && (
                           <p className="text-sm text-slate-500 mt-2">Billed monthly, cancel anytime</p>
+                        )}
+                        {product.price === 0 && (
+                          <p className="text-sm text-green-600 mt-2 font-medium">No credit card required</p>
                         )}
                       </div>
                     </div>
@@ -232,21 +261,21 @@ export function PricingPage() {
                     {/* CTA Button */}
                     <button
                       onClick={() => handleSelectPlan(product)}
-                      disabled={!user || (isSubscriptionActive() && product.mode === 'subscription')}
+                      disabled={!user && product.price !== 0}
                       className={`w-full py-4 px-8 rounded-xl font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 ${
-                        product.name.toLowerCase() === 'subscription'
-                          ? 'bg-gradient-to-r from-slate-700 to-slate-600 text-white hover:from-slate-800 hover:to-slate-700 shadow-xl hover:shadow-2xl transform hover:scale-105'
+                        product.price === 0
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 shadow-xl hover:shadow-2xl transform hover:scale-105'
+                          : product.name.toLowerCase() === 'individual subscription'
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:scale-105'
                           : 'bg-slate-100 text-slate-800 hover:bg-slate-200 shadow-lg hover:shadow-xl'
                       }`}
                     >
                       <span>
-                        {!user
+                        {!user && product.price !== 0
                           ? 'Sign in to purchase'
-                          : isSubscriptionActive() && product.mode === 'subscription'
-                          ? 'Already subscribed'
                           : getCtaLabel(product)}
                       </span>
-                      {user && !(isSubscriptionActive() && product.mode === 'subscription') && (
+                      {(user || product.price === 0) && (
                         <ArrowRight className="w-5 h-5" />
                       )}
                     </button>
@@ -322,8 +351,11 @@ export function PricingPage() {
                 Join TAC Marketplace today and start growing your business with our powerful platform
               </p>
               {!user && (
-                <button className="bg-white text-slate-800 font-bold py-4 px-8 rounded-xl hover:bg-slate-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                  Sign Up Now
+                <button 
+                  onClick={() => handleSelectPlan(stripeProducts[0])}
+                  className="bg-white text-slate-800 font-bold py-4 px-8 rounded-xl hover:bg-slate-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  Start Free Today
                 </button>
               )}
             </div>

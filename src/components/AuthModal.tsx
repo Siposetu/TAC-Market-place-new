@@ -42,6 +42,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
     setRegisterData({ email: '', password: '', name: '', phone: '', role: 'client' });
     setError('');
     setSuccess('');
+    setLoading(false);
   };
 
   const switchMode = (newMode: 'login' | 'register') => {
@@ -93,12 +94,11 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
     const result = await register(registerData);
 
     if (result.success) {
-      setSuccess('Registration successful! Please check your email to verify your account.');
+      setSuccess('Registration successful! You can now sign in with your credentials.');
       setTimeout(() => {
-        onClose();
-        resetForm();
+        switchMode('login');
         setSuccess('');
-      }, 3000);
+      }, 2000);
     } else {
       setError(result.error || 'Registration failed');
     }
