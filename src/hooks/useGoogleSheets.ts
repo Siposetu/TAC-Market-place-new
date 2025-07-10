@@ -651,6 +651,13 @@ export function useGoogleSheets() {
       setLoading(false);
     }
   };
+  const addProfile = async (profile: any): Promise<boolean> => {
+    // Mock function for Google Sheets integration
+    // In a real implementation, this would sync to Google Sheets
+    console.log('Profile would be synced to Google Sheets:', profile);
+    return true;
+  };
+
   return {
     syncLocalProfileToSheets,
     syncServiceProviderToSheets,
@@ -661,6 +668,7 @@ export function useGoogleSheets() {
     syncUserToSheets,
     setupAllSheets,
     signIn,
+    addProfile,
     isSignedIn,
     isGoogleSheetsConfigured,
     loading,

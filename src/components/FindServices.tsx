@@ -272,11 +272,10 @@ export function FindServices() {
                   <div className="flex items-center space-x-3">
                     <button
                       onClick={() => setBookingProvider(provider)}
-                      disabled={!user}
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center space-x-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center space-x-2 shadow-lg transform hover:scale-105"
                     >
                       <Calendar className="w-4 h-4" />
-                      <span>{user ? 'Book Now' : 'Sign In to Book'}</span>
+                      <span>Book Now</span>
                     </button>
 
                     {/* Contact Options */}

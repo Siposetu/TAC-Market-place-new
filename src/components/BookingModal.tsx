@@ -29,9 +29,9 @@ export function BookingModal({ isOpen, onClose, provider }: BookingModalProps) {
     if (user) {
       setClientInfo(prev => ({
         ...prev,
-        name: user.name,
-        phone: user.phone,
-        email: user.email
+        name: user.name || '',
+        phone: user.phone || '',
+        email: user.email || ''
       }));
     }
   }, [user]);

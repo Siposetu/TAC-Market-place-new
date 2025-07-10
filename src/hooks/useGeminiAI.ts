@@ -133,8 +133,42 @@ Please respond in this exact JSON format:
     }
   };
 
+  const generateBio = async (data: { skill: string; experience: number; location: string }): Promise<string> => {
+    // Fallback bio generation for local profiles
+    const templates = [
+      `Professional ${data.skill.toLowerCase()} with ${data.experience} years of experience serving clients in ${data.location}. Known for delivering high-quality work and exceptional customer service.`,
+      `With ${data.experience} years of hands-on experience, this ${data.skill.toLowerCase()} specialist has built a reputation for reliability and expertise in ${data.location}.`,
+      `Experienced ${data.skill.toLowerCase()} professional with ${data.experience} years in the field, serving the ${data.location} community with dedication and skill.`
+    ];
+    
+    return templates[Math.floor(Math.random() * templates.length)];
+  };
+
+  const generatePricing = async (data: { skill: string; experience: number; location: string }): Promise<number> => {
+    const basePrices: { [key: string]: number } = {
+      'Hairdressing': 150,
+      'Plumbing': 300,
+      'Tutoring': 180,
+      'Makeup': 200,
+      'Cleaning': 120,
+      'Catering': 250,
+      'Photography': 400,
+      'Sewing': 180,
+      'Crochet': 150,
+      'Electrical': 350,
+      'Other': 200
+    };
+    
+    const basePrice = basePrices[data.skill] || 200;
+    const experienceMultiplier = 1 + (data.experience * 0.1);
+    
+    return Math.round(basePrice * experienceMultiplier);
+  };
+
   return {
     generateProfileContent,
+    generateBio,
+    generatePricing,
     loading,
     error
   };
